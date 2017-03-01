@@ -1,0 +1,23 @@
+<div id="homeView">
+    <div class="row intro-header">
+        <div class="col-lg-12">
+            <div class="intro-message">
+                <h1>Intro Message</h1>
+                <hr class="intro-divider">
+            </div>
+        </div>
+        <ul class="list-inline intro-social-buttons">
+            <li ng-if="user">
+                <a href="#/profile" class="btn btn-default btn-lg"><i class="fa fa-user"></i> <span ng-bind="user.Name"></span></a>
+            </li>
+            <li ng-if="!user">
+                <a href="#/login" class="btn btn-default btn-lg"><i class="fa fa-sign-in"></i> Login</a>
+            </li>
+            <li ng-if="!user">
+                <a href="#/register" class="btn btn-default btn-lg"><i class="fa fa-user"></i> Register</a>
+            <li ng-if="user">
+                <a href="#" ng-click="logout()" class="btn btn-default btn-lg"><i class="fa fa-sign-out"></i> Logout</a>
+            </li>
+        </ul>
+    </div>
+</div>
