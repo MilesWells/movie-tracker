@@ -28,7 +28,6 @@
   padding-bottom: 50px;
   text-align: center;
   color: #f8f8f8;
-  background: url('/images/bg-splash.png') no-repeat center center;
   background-size: cover;
   margin-top:-20px;
 }
@@ -85,4 +84,30 @@ input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+#searchView textarea {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  resize: vertical;
+}
+
+#searchView a {
+  cursor: pointer;
+}
+
+.top10 {
+  margin-top: 10px;
+}
+
+.top5 {
+  margin-top: 5px;
+}
+
+.sortorder:after {
+  content: '\25b2';   // BLACK UP-POINTING TRIANGLE
+}
+.sortorder.reverse:after {
+  content: '\25bc';   // BLACK DOWN-POINTING TRIANGLE
 }

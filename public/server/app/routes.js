@@ -1,5 +1,6 @@
 const Dynamo = require('../config/dynamoDB');
 const uuid = require('uuid');
+const imdbApi = require('imdb-api');
 
 module.exports = function(app, passport) {
 	// index route
@@ -13,12 +14,12 @@ module.exports = function(app, passport) {
 	});
 
 	// route to test if the user is logged in or not
-	app.get('/loggedin', function(req, res) {
+	app.get('/loggedin', (req, res) => {
 		res.send(req.isAuthenticated() ? req.user : '0');
 	});
 
     // route to test if the user is an admin
-    app.get('/isadmin', function(req, res) {
+    app.get('/isadmin', (req, res) => {
         res.send((req.isAuthenticated() && req.user.attrs.isAdmin) ? req.user : '0');
     });
 
@@ -36,6 +37,34 @@ module.exports = function(app, passport) {
 				} else {
 					res.send(user);
 				}
+			});
+	});
+
+	app.post('/movies', (req, res) => {
+		const movies = req.body.movies.split(/\r?\n/);
+        let promises = [];
+
+        movies.forEach((value) => {
+            promises.push(imdbApi.getReq({name: value}).catch((err) => err));
+        });
+
+        let result = {
+        	found: [],
+			notFound: []
+        };
+
+        Promise.all(promises)
+			.then((values) => {
+				values.forEach((imdbResult) => {
+					if(imdbResult.constructor.name !== 'ImdbError') {
+						imdbResult.runtimeInt = parseInt(imdbResult.runtime.split(' ')[0]);
+						result.found.push(imdbResult);
+					} else {
+						result.notFound.push(imdbResult);
+					}
+				});
+
+                res.send(result);
 			});
 	});
 

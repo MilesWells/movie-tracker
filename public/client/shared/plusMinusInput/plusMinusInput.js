@@ -1,4 +1,4 @@
-angular.module('MyApp')
+angular.module('MovieTracker')
     .component('plusMinusInput', {
         templateUrl: '/shared/plusMinusInput/plusMinusInput.html',
         bindings: {

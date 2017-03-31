@@ -3,8 +3,10 @@
 /**********************************************************************
  * Angular Application
  **********************************************************************/
-let app = angular.module('MyApp', ['ngResource', 'ngRoute', 'ngMessages', 'toastr', 'textAngular'])
+let app = angular.module('MovieTracker', ['ngResource', 'ngRoute', 'ngMessages', 'toastr'])
     .config(($routeProvider, $locationProvider, $httpProvider) => {
+        $locationProvider.hashPrefix('');
+
         //================================================
         // Check if the user is connected
         //================================================
@@ -13,7 +15,7 @@ let app = angular.module('MyApp', ['ngResource', 'ngRoute', 'ngMessages', 'toast
             let deferred = $q.defer();
 
             // Make an AJAX call to check if the user is logged in
-            $http.get('/loggedin').success(user => {
+            $http.get('/loggedin').then(user => {
                 // Authenticated
                 if (user !== '0')
                 /*$timeout(deferred.resolve, 0);*/
@@ -40,7 +42,7 @@ let app = angular.module('MyApp', ['ngResource', 'ngRoute', 'ngMessages', 'toast
             let deferred = $q.defer();
 
             // Make an AJAX call to check if the user is logged in
-            $http.get('/isadmin').success(user => {
+            $http.get('/isadmin').then(user => {
                 // Authenticated
                 if (user !== '0')
                 /*$timeout(deferred.resolve, 0);*/
@@ -104,6 +106,13 @@ let app = angular.module('MyApp', ['ngResource', 'ngRoute', 'ngMessages', 'toast
             .when('/register', {
                 templateUrl: '/components/register/registerView.html',
                 controller: 'RegisterCtrl'
+            })
+            .when('/search', {
+                templateUrl: '/components/search/searchView.html',
+                controller: 'SearchCtrl',
+                resolve: {
+                    loggedin: checkLoggedin
+                }
             })
             .otherwise({
                 redirectTo: '/'

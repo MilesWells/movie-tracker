@@ -43,7 +43,6 @@ module.exports = function(passport) {
     }, (req, email, password, done) => {
         //get parameters form request body
         const confirmPassword = req.body.confirmPassword;
-        const accessCode = req.body.accessCode;
         const name = req.body.name;
 
         if(!name || name.trim().length == 0) {
@@ -83,11 +82,9 @@ module.exports = function(passport) {
                         UserId: uuid.v4(),
                         isAdmin: false,
                         Email: email,
-                        Password: bcrypt.hashSync(password),
-                        InvitationCode: accessCode,
                         Name: name,
-                        Rsvp: rsvp,
-                        PlusOne: plusOne
+                        Password: bcrypt.hashSync(password),
+                        Banned: false
                     }, (error, user) => {
                         if (error) {
                             console.log(error);
@@ -121,7 +118,7 @@ module.exports = function(passport) {
                     return done('There was an error logging in.');
                 }
 
-                if(!data || data.length == 0 || !bcrypt.compareSync(password, data.Items[0].attrs.Password)) {
+                if(!data || !data.Items || data.Items.length == 0 || !bcrypt.compareSync(password, data.Items[0].attrs.Password)) {
                     return done('Invalid username or password');
                 }
 

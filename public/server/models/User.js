@@ -1,7 +1,7 @@
 const dynogels = require('dynogels');
 const joi = require('joi');
 
-module.exports = dynogels.define('User', {
+module.exports = dynogels.define('MovieUser', {
     hashKey: 'UserId',
 
     timestamps: true,
@@ -10,11 +10,9 @@ module.exports = dynogels.define('User', {
         UserId: joi.string(),
         isAdmin: joi.boolean(),
         Email: joi.string().email(),
-        Password: joi.string(),
-        InvitationCode: joi.string(),
         Name: joi.string(),
-        Rsvp: joi.boolean(),
-        PlusOne: joi.boolean()
+        Password: joi.string(),
+        Banned: joi.boolean()
     },
 
     indexes: [{

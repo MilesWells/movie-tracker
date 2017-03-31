@@ -1,10 +1,10 @@
-angular.module('MyApp')
+angular.module('MovieTracker')
     .controller('LoginCtrl', function ($scope, $rootScope, $http, $location) {
         $scope.message = '';
 
         $http.get('/loggedin', {})
-            .success(result => {
-                if (result.UserId) {
+            .then(result => {
+                if (result.data.UserId) {
                     $location.url('/profile');
                 }
             });
@@ -17,12 +17,12 @@ angular.module('MyApp')
                 username: $scope.email,
                 password: $scope.password
             })
-            .success(user => {
-                $rootScope.setUser(user);
+            .then(user => {
+                $rootScope.setUser(user.data);
                 // No error: authentication OK
                 $location.url('/profile');
             })
-            .error(() => {
+            .catch(() => {
                 // Error: authentication failed
                 $scope.message = 'Incorrect username or password.';
                 $scope.hasActiveRequest = false;

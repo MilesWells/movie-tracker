@@ -1,4 +1,4 @@
-angular.module('MyApp').factory('UserService', [
+angular.module('MovieTracker').factory('UserService', [
     '$window', '$rootScope',
     ($window, $rootScope) => {
 

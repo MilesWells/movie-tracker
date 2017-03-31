@@ -1,4 +1,4 @@
-angular.module('MyApp').factory('CommonService', () => {
+angular.module('MovieTracker').factory('CommonService', () => {
 
         return {
             allFalse: allFalse

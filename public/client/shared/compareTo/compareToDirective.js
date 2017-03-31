@@ -1,4 +1,4 @@
-angular.module('MyApp')
+angular.module('MovieTracker')
     .directive('compareTo', () => {
         return {
             require: "ngModel",

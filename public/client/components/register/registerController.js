@@ -1,6 +1,16 @@
-angular.module('MyApp')
+angular.module('MovieTracker')
     .controller('RegisterCtrl', function ($scope, $rootScope, $http, $location) {
         $scope.message = '';
+
+        $http.get('/loggedin', {})
+            .then(result => {
+                console.log(result);
+                console.log(result.data);
+                console.log(result.data.UserId);
+                if (result.data.UserId) {
+                    $location.url('/profile');
+                }
+            });
 
         // Register the login() function
         $scope.register = function(isValid) {
@@ -16,13 +26,13 @@ angular.module('MyApp')
                 confirmPassword: $scope.confirmPassword,
                 name: $scope.name
             })
-            .success(user => {
-                $rootScope.setUser(user);
+            .then(user => {
+                $rootScope.setUser(user.data);
 
                 // No error: authentication OK
                 $location.url('/profile');
             })
-            .error(response => {
+            .catch(response => {
                 // Error: authentication failed
                 $scope.message = response;
                 $scope.hasActiveRequest = false;

@@ -1,4 +1,4 @@
-angular.module('MyApp')
+angular.module('MovieTracker')
     .controller('HomeCtrl', function ($scope, $rootScope, $location, $http) {
         $scope.user = $rootScope.getUser();
 
@@ -14,7 +14,7 @@ angular.module('MyApp')
 
         $scope.logout = function() {
             $http.post('/logout', {})
-                .success(() => {
+                .then(() => {
                     $rootScope.setUser(null);
 
                     $location.url('/');

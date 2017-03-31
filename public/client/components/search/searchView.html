@@ -1,0 +1,46 @@
+<div id="searchView">
+	<div class="page-header text-center">
+		<h1>Search for Movies Below</h1>
+		<h4>Put each movie title on its own line</h4>
+	</div>
+
+	<div class="row">
+		<div class="col-xs-12">
+			<textarea rows="10" cols="60" ng-model="movieSearchList"></textarea>
+		</div>
+	</div>
+
+	<div class="row top10">
+		<div class="col-xs-12 text-center">
+			<button ng-disabled="this.hasActiveRequest" class="btn btn-default" ng-click="this.search()">Search</button>
+		</div>
+	</div>
+
+	<div ng-if="this.movies" class="row top10">
+		<div class="sortTable col-xs-12">
+			<div class="row">
+				<div class="col-xs-12">
+					Order By:
+					<select ng-options="option.name for option in sortOptions" ng-model="selectedSortOption"></select>
+				</div>
+			</div>
+			<div class="row" ng-repeat="movie in movies | orderBy:selectedSortOption.key:selectedSortOption.reverse">
+				<div class="col-xs-12">
+					<hr/>
+					<h3>{{movie.title}} ({{movie.year}})</h3>
+					<div>IMDb Rating: {{movie.rating}} | {{movie.runtime}} | {{movie.genres}} | {{movie.rated}}</div>
+					<div class="top5">{{movie.plot}}</div>
+					<a ng-if="!movie.showMore" ng-click="movie.showMore = !movie.showMore">More Info...</a>
+					<a ng-if="movie.showMore" ng-click="movie.showMore = !movie.showMore">Less Info...</a>
+					<div ng-if="movie.showMore">
+						<div>Actors: {{movie.actors}}</div>
+						<div>Director: {{movie.director}}</div>
+						<div>Writer: {{movie.writer}}</div>
+						<div>Languages: {{movie.languages}}</div>
+						<div>Website: <a href="{{movie.website}}">{{movie.website}}</a></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

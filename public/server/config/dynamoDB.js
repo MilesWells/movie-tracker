@@ -5,6 +5,7 @@ dynogels.AWS.config.loadFromPath('./public/server/config/credentials.json');
 
 //require models for dynogels
 const User = require('../models/User');
+const Movie = require('../models/Movie');
 
 //create tables for dynogels
 dynogels.createTables((error) => {
@@ -15,5 +16,6 @@ dynogels.createTables((error) => {
 });
 
 module.exports = {
-    User: User
+    User: User,
+    Movie: Movie
 };
