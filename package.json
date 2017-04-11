@@ -7,6 +7,7 @@
     "angular-resource": "^1.5.8",
     "angular-route": "^1.5.8",
     "angular-smart-table": "^2.1.8",
+    "angular-spinner": "^1.0.1",
     "angular-toastr": "^2.1.1",
     "bcrypt-nodejs": "0.0.3",
     "connect-flash": "~0.1.1",

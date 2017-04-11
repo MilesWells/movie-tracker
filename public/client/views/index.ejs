@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="/scripts/styles/main.css">
 </head>
 <body ng-controller="HomeCtrl" ng-class="{'landing-bg': !showNavBar}">
-<div class="container-fluid">
+<div class="container-fluid" style="margin-bottom:20px;">
 
 	<div class="row" ng-if="showNavBar">
 		<nav class="navbar navbar-default">
@@ -24,6 +24,7 @@
 
 				<ul class="nav navbar-nav navbar-right">
 					<li ng-if="user"><a href="#/search"><i class="fa fa-search"></i> Search</a></li>
+					<li ng-if="user"><a href="#/movies"><i class="fa fa-video-camera"></i> My Movies</a></li>
 					<li ng-if="user"><a href="#/profile"><i class="fa fa-user"></i> <span ng-bind="user.Name"></span></a></li>
 					<li ng-if="user.isAdmin"><a href="#/admin"><i class="fa fa-cog"></i> Admin Panel</a></li>
 					<li ng-if="user"><a href="#" ng-click="logout()"><i class="fa fa-sign-out"></i> Logout</a></li>
@@ -42,6 +43,7 @@
 <script src="/scripts/angular-resource.min.js"></script>
 <script src="/scripts/angular-route.min.js"></script>
 <script src="/scripts/angular-messages.js"></script>
+<script src="/scripts/angular-spinner.js"></script>
 <script src="https://unpkg.com/angular-toastr/dist/angular-toastr.tpls.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script src="/scripts/bootstrap.min.js"></script>
@@ -60,9 +62,11 @@
 <script src="/components/register/registerController.js"></script>
 <script src="/components/home/homeController.js"></script>
 <script src="/components/adminPanel/adminPanelController.js"></script>
+<script src="/components/myMovies/myMoviesController.js"></script>
 
 <!-- Services -->
 <script src="/components/adminPanel/adminPanelService.js"></script>
+<script src="/components/myMovies/myMoviesService.js"></script>
 <script src="/shared/services/commonService.js"></script>
 <script src="/shared/services/userService.js"></script>
 

@@ -1,0 +1,66 @@
+<div id="searchView">
+	<div class="page-header text-center">
+		<h1>{{::user.Name}}'s Movie List</h1>
+	</div>
+
+	<div ng-if="this.movies" class="row top10">
+		<div class="sortTable col-xs-12">
+			<div class="row">
+				<div class="col-xs-6">
+					Order By:
+					<select ng-options="option.name for option in sortOptions" ng-model="selectedSortOption"></select>
+				</div>
+				<div class="col-xs-6 text-right">
+					Show:
+					<select ng-options="option.name for option in showOptions" ng-model="selectedShowOption"></select>
+				</div>
+			</div>
+			<div class="row" ng-repeat="movie in movies | orderBy:selectedSortOption.key:selectedSortOption.reverse | filter: selectedShowOption.value === 'all' ? undefined : { Seen: selectedShowOption.value }">
+				<hr/>
+				<div class="col-xs-12">
+					<div class="row">
+						<div class="col-xs-12">
+							<h3>{{movie.Title}} ({{movie.Year}})</h3>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-xs-12">
+							<div>
+								IMDb Rating: {{movie.ImdbRating | number:1}} | {{movie.Runtime}} | {{movie.Genres}} | {{movie.MpaaRating}} |
+								<a ng-if="!movie.showMore" ng-click="movie.showMore = !movie.showMore">More Info...</a>
+								<a ng-if="movie.showMore" ng-click="movie.showMore = !movie.showMore">Less Info...</a>
+							</div>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-xs-12 form-inline">
+							<div class="checkbox">
+								<label>Seen <input class="form-control" ng-change="updateSeen(movie)" type="checkbox" ng-model="movie.Seen"/></label>
+							</div>
+
+							<div class="form-group">
+								<label for="ratingSelect">Rating</label>
+								<select class="form-control" ng-change="updateRating(movie)" id="ratingSelect" ng-model="movie.UserRating" ng-options="n for n in [] | range:0:10"></select>
+							</div>
+
+							<button class="btn btn-xs btn-default" ng-click="removeMovie(movie)">Remove</button>
+						</div>
+					</div>
+
+					<div class="row" ng-if="movie.showMore">
+						<div class="col-xs-12">
+							<div>{{movie.Plot}}</div>
+							<div>Actors: {{movie.Actors}}</div>
+							<div>Director: {{movie.Director}}</div>
+							<div>Writer: {{movie.Writer}}</div>
+							<div>Languages: {{movie.Languages}}</div>
+							<div>Website: <a href="{{movie.Website}}">{{movie.Website}}</a></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

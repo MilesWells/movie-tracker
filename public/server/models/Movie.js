@@ -9,22 +9,32 @@ module.exports = dynogels.define('Movie', {
     schema: {
         MovieId: joi.string(),
         UserId: joi.string(),
-        Name: joi.string(),
+        Title: joi.string(),
         Plot: joi.string(),
-        ImdbRating: joi.number().precision(1),
-        UserRating: joi.number().precision(1),
+        ImdbRating: joi.number().precision(1).allow(null),
+        UserRating: joi.number().allow(null),
         MpaaRating: joi.string(),
         Seen: joi.boolean(),
         Genres: joi.string(),
         Year: joi.number(),
         Actors: joi.string(),
         Runtime: joi.string(),
-        imdbId: joi.string()
+        ImdbId: joi.string(),
+        Director: joi.string(),
+        Writer: joi.string(),
+        Languages: joi.string(),
+        Website: joi.string()
     },
 
     indexes: [{
         hashKey: 'UserId',
         name: 'UserId-index',
         type: 'global'
+    },
+    {
+        hashKey : 'UserId',
+        rangeKey : 'Title',
+        name : 'Title-index',
+        type : 'global',
     }]
 });

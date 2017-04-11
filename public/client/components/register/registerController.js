@@ -4,9 +4,6 @@ angular.module('MovieTracker')
 
         $http.get('/loggedin', {})
             .then(result => {
-                console.log(result);
-                console.log(result.data);
-                console.log(result.data.UserId);
                 if (result.data.UserId) {
                     $location.url('/profile');
                 }

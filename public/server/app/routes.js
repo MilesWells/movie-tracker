@@ -40,33 +40,115 @@ module.exports = function(app, passport) {
 			});
 	});
 
-	app.post('/movies', (req, res) => {
-		const movies = req.body.movies.split(/\r?\n/);
+	app.post('/movies', isAuthenticated, (req, res) => {
+        let movies = req.body.movies.split(/\r?\n/);
         let promises = [];
 
-        movies.forEach((value) => {
-            promises.push(imdbApi.getReq({name: value}).catch((err) => err));
-        });
-
         let result = {
-        	found: [],
-			notFound: []
+            found: [],
+            notFound: []
         };
 
-        Promise.all(promises)
-			.then((values) => {
-				values.forEach((imdbResult) => {
-					if(imdbResult.constructor.name !== 'ImdbError') {
-						imdbResult.runtimeInt = parseInt(imdbResult.runtime.split(' ')[0]);
-						result.found.push(imdbResult);
-					} else {
-						result.notFound.push(imdbResult);
-					}
+        if(req.body.movies.length == 0 || movies.length == 0) {
+        	res.send(result);
+		}
+
+        Dynamo.Movie
+            .scan()
+            .where('UserId').equals(req.user.attrs.UserId)
+            .where('Title').in(movies)
+            .exec((error, data) => {
+                if (!error && data) {
+                    data.Items.forEach((movieData) => result.found.push(movieData.attrs));
+                    movies = movies.filter((movie) => {
+                    	for(let i = 0; i < result.found.length; i++) {
+                    		if(movie == result.found[i].Title) return false;
+						}
+
+						return true;
+					});
+                }
+
+                movies.forEach((value) => {
+                    promises.push(imdbApi.getReq({name: value}).catch((err) => err));
+                });
+
+                Promise.all(promises).then((values) => {
+                    values.forEach((imdbResult) => {
+                        if (imdbResult.constructor.name !== 'ImdbError') {
+                            imdbResult.runtimeInt = parseInt(imdbResult.runtime.split(' ')[0]);
+                            result.found.push(imdbResult);
+                        } else {
+                            result.notFound.push(imdbResult);
+                        }
+                    });
+
+                    res.send(result);
+                }).catch((error) => {
+                	console.log(error);
+                	res.send('Failed to complete search');
 				});
 
-                res.send(result);
-			});
-	});
+            });
+    });
+
+	app
+		.post('/movies/:userId', isAuthenticated, (req, res) => {
+			let movie = req.body.movie;
+			movie.MovieId = uuid.v4();
+			movie.UserId = req.params.userId;
+
+			Dynamo.Movie
+				.create(movie, (error, movie) => {
+					if(error) {
+						console.log(error);
+						res.status(500).send(error);
+					} else {
+						res.send(movie);
+					}
+				});
+		})
+		.put('/movies/:userId/:movieId', isAuthenticated, (req, res) => {
+			if(req.params.movieId != req.body.movie.MovieId || req.params.userId != req.body.movie.UserId) {
+				res.status(400).send('Ids in body must match those in URL.');
+				return;
+			}
+
+			let movie = req.body.movie;
+
+			Dynamo.Movie
+				.update(movie, (error, movie) => {
+					if(error) {
+						console.log(error);
+						res.status(500).send(error);
+					} else {
+						res.send(movie);
+					}
+				});
+		})
+		.get('/movies/:userId', isAuthenticated, (req, res) => {
+            Dynamo.Movie
+                .query(req.params.userId)
+                .usingIndex('UserId-index')
+                .exec((error, data) => {
+                    if (error) {
+                        console.log(error);
+                        res.status(500).send(error);
+                    } else {
+                        res.send(data);
+                    }
+                });
+		})
+		.delete('/movies/:userId/:movieId', isAuthenticated, (req, res) => {
+            Dynamo.Movie
+                .destroy(req.params.movieId, (error) => {
+                    if(error) {
+                        res.status(500).send(error);
+                    } else {
+                        res.send('Movie delete from your list!');
+                    }
+                });
+		});
 
 	// logout route
 	app.post('/logout', (req, res) => {

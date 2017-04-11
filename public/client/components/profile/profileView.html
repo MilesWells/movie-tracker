@@ -1,3 +1,22 @@
-<div class="page-header text-center">
-	<h1>Welcome to your profile, {{:: user.Name}}</h1>
+<div id="profileView" class="text-center">
+	<div class="page-header">
+		<h1>Welcome to your profile, {{:: user.Name}}</h1>
+	</div>
+
+	<div ng-if="!movies">You don't seem to have any movies in your list. Go <a href="#/search">here</a> to find some!</div>
+
+	<div ng-if="movies">
+		<div class="row">
+			<div class="col-xs-12">
+				<h3>Your stats</h3>
+			</div>
+		</div>
+
+		<div class="row" ng-repeat="row in chunkedStats | filter:{value: '!!'}">
+			<div class="col-xs-6 text-center" ng-repeat="stat in row">
+				<h4>{{::stat.name}}</h4>
+				<span>{{::stat.value}}</span>
+			</div>
+		</div>
+	</div>
 </div>

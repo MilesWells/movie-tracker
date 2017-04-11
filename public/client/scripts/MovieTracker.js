@@ -3,9 +3,32 @@
 /**********************************************************************
  * Angular Application
  **********************************************************************/
-let app = angular.module('MovieTracker', ['ngResource', 'ngRoute', 'ngMessages', 'toastr'])
-    .config(($routeProvider, $locationProvider, $httpProvider) => {
+let app = angular.module('MovieTracker', ['ngResource', 'ngRoute', 'ngMessages', 'toastr', 'angularSpinner'])
+    .factory('InterceptorService',['$rootScope', '$q', '$location', function($rootScope, $q){
+        let InterceptorServiceFactory = {};
+
+        const _request = function(config){
+            //success logic here
+            return config;
+        };
+
+        const _responseError = function(rejection) {
+            //error here. for example server respond with 401
+            if(rejection.status == 401) {
+                $rootScope.logout();
+            }
+            return $q.reject(rejection);
+        };
+
+        InterceptorServiceFactory.request = _request;
+        InterceptorServiceFactory.responseError = _responseError;
+        return InterceptorServiceFactory;
+
+    }])
+    .config(($routeProvider, $locationProvider, $httpProvider, $windowProvider) => {
         $locationProvider.hashPrefix('');
+
+        $httpProvider.interceptors.push('InterceptorService');
 
         //================================================
         // Check if the user is connected
@@ -81,6 +104,7 @@ let app = angular.module('MovieTracker', ['ngResource', 'ngRoute', 'ngMessages',
         //================================================
         // Define all the routes
         //================================================
+        let isMobile = $windowProvider.$get().innerWidth <= 1024;
         $routeProvider
             .when('/', {
                 templateUrl: '/components/home/homeView.html'
@@ -88,6 +112,13 @@ let app = angular.module('MovieTracker', ['ngResource', 'ngRoute', 'ngMessages',
             .when('/profile', {
                 templateUrl: '/components/profile/profileView.html',
                 controller: 'ProfileCtrl',
+                resolve: {
+                    loggedin: checkLoggedin
+                }
+            })
+            .when('/movies', {
+                templateUrl: isMobile ? '/components/myMovies/myMoviesView.mobile.html' : '/components/myMovies/myMoviesView.html',
+                controller: 'MyMoviesCtrl',
                 resolve: {
                     loggedin: checkLoggedin
                 }
@@ -100,15 +131,15 @@ let app = angular.module('MovieTracker', ['ngResource', 'ngRoute', 'ngMessages',
                 }
             })
             .when('/login', {
-                templateUrl: '/components/login/loginView.html',
+                templateUrl: isMobile ? '/components/login/loginView.mobile.html' : '/components/login/loginView.html',
                 controller: 'LoginCtrl'
             })
             .when('/register', {
-                templateUrl: '/components/register/registerView.html',
+                templateUrl: isMobile ? '/components/register/registerView.mobile.html' : '/components/register/registerView.html',
                 controller: 'RegisterCtrl'
             })
             .when('/search', {
-                templateUrl: '/components/search/searchView.html',
+                templateUrl: isMobile ? '/components/search/searchView.mobile.html' : '/components/search/searchView.html',
                 controller: 'SearchCtrl',
                 resolve: {
                     loggedin: checkLoggedin
@@ -120,14 +151,17 @@ let app = angular.module('MovieTracker', ['ngResource', 'ngRoute', 'ngMessages',
         //================================================
 
     }) // end of config()
-    .run(($rootScope, $http) => {
+    .run(($rootScope, $http, $location) => {
         $rootScope.message = '';
 
         // Logout function is available in any pages
         $rootScope.logout = function(){
             $rootScope.message = 'Logged out.';
             $rootScope.setUser(null);
-            $http.post('/logout');
+            $http.post('/logout')
+                .then(() => {
+                    $location.url('/login');
+                });
         };
     })
     .run(["$rootScope", "UserService",
