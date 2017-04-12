@@ -6,7 +6,7 @@ angular.module('MovieTracker')
             $location.url('/login');
             return;
         }
-        
+
         $http.get('/loggedin', {})
             .then(result => {
                 if (!result || !result.data || !result.data.UserId) {

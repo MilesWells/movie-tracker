@@ -38,4 +38,12 @@ require('./public/server/app/routes.js')(app, passport); // load our routes and 
 
 // launch ======================================================================
 app.listen(port);
+// let fs       = require('fs');
+// let https    = require('https');
+// let sslOptions = {
+//     key: fs.readFileSync('server.key'),
+//     cert: fs.readFileSync('server.crt')
+// };
+// https.createServer(sslOptions, app).listen(8443);
+
 console.log('The magic happens on port ' + port);
