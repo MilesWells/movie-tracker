@@ -184,6 +184,13 @@ let app = angular.module('MovieTracker', ['ngResource', 'ngRoute', 'ngMessages',
             return input;
         };
     })
+    .filter('filterSubstr', function() {
+        return function (strings, substr) {
+            return strings.filter(function (item) {
+                return item.Title.toLowerCase().includes(substr.toLowerCase());
+            });
+        };
+    })
     .directive('ngConfirmClick', [
         function() {
             return {

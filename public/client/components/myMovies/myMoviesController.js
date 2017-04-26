@@ -1,6 +1,12 @@
 angular.module('MovieTracker')
     .controller('MyMoviesCtrl', function ($scope, $rootScope, $http, $location, toastr, MyMoviesService) {
         $scope.user = $rootScope.getUser();
+        $scope.filters = { showSeenMovies: true };
+        $scope.quickSearch = '';
+
+        $scope.filterSeen = function(movie) {
+            return (movie.Seen && $scope.filters.showSeenMovies) || !movie.Seen;
+        };
 
         $scope.sortOptions = [
             { name: 'Title (A - Z)', key: 'Title', reverse: false },
@@ -15,14 +21,7 @@ angular.module('MovieTracker')
             { name: 'Runtime (Longest First)', key: 'Runtime', reverse: true }
         ];
 
-        $scope.showOptions = [
-            { name: 'All', value: 'all' },
-            { name: 'Seen', value: true },
-            { name: 'Not Seen', value: false }
-        ];
-
         $scope.selectedSortOption = $scope.sortOptions[0];
-        $scope.selectedShowOption = $scope.showOptions[0];
 
         $scope.updateRating = function(movie) {
             if(movie.UserRating !== '') {

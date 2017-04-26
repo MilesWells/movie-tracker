@@ -11,11 +11,16 @@
 					<select ng-options="option.name for option in sortOptions" ng-model="selectedSortOption"></select>
 				</div>
 				<div class="col-xs-6 text-right">
-					Show:
-					<select ng-options="option.name for option in showOptions" ng-model="selectedShowOption"></select>
+					<label for="showSeenCheckbox">Show Seen Movies:</label>
+					<input id="showSeenCheckbox" type="checkbox" ng-model="filters.showSeenMovies"/>
 				</div>
 			</div>
-			<div class="row" ng-repeat="movie in movies | orderBy:selectedSortOption.key:selectedSortOption.reverse | filter: selectedShowOption.value === 'all' ? undefined : { Seen: selectedShowOption.value }">
+			<div class="row">
+				<div class="col-xs-12">
+					<input ng-model="quickSearch" placeholder="Quick Search..." />
+				</div>
+			</div>
+			<div class="row" ng-repeat="movie in movies | orderBy:selectedSortOption.key:selectedSortOption.reverse | filterSubstr: quickSearch | filter: filterSeen">
 				<hr/>
 				<div class="col-xs-2">
 					<div class="row">
