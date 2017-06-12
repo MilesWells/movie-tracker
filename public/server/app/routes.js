@@ -79,7 +79,7 @@ module.exports = function(app, passport) {
                 }
 
                 movies.forEach((value) => {
-                    promises.push(imdbApi.getReq({name: value}).catch((err) => err));
+                    promises.push(imdbApi.getReq({ name: value, opts: { apiKey: '1b227dd4' } }).catch((err) => err));
                 });
 
                 Promise.all(promises).then((values) => {
